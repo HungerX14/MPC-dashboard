@@ -1,0 +1,119 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Publications - WPilot{% endblock %}
+
+{% block content %}
+{# Header #}
+<div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-8">
+    <div>
+        <h1 class="text-2xl lg:text-3xl font-bold text-white">Publications</h1>
+        <p class="mt-1 text-white/60">Historique de tous vos articles publies</p>
+    </div>
+    <a href="{{ path('app_article_create') }}" class="btn-primary flex items-center gap-2 px-4 py-2.5 rounded-xl text-white font-medium w-fit">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+        </svg>
+        <span>Nouvel article</span>
+    </a>
+</div>
+
+{# Publications List #}
+<div class="glass-card rounded-2xl overflow-hidden">
+    {% if publications|length > 0 %}
+        <div class="divide-y divide-white/5">
+            {% for publication in publications %}
+                <div class="p-4 flex items-center justify-between table-row">
+                    <div class="flex items-center gap-4">
+                        {# Status Icon #}
+                        <div class="flex-shrink-0">
+                            {% if publication.status == 'published' %}
+                                <div class="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                </div>
+                            {% elseif publication.status == 'scheduled' %}
+                                <div class="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                </div>
+                            {% elseif publication.status == 'failed' %}
+                                <div class="w-10 h-10 rounded-xl bg-red-500/20 flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                    </svg>
+                                </div>
+                            {% else %}
+                                <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        {# Content #}
+                        <div class="min-w-0">
+                            <h3 class="font-medium text-white truncate">{{ publication.title }}</h3>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="text-sm text-white/50">{{ publication.site.name }}</span>
+                                <span class="text-white/30">•</span>
+                                <span class="text-sm text-white/50">{{ publication.createdAt|date('d/m/Y H:i') }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        {# Status Badge #}
+                        {% if publication.status == 'published' %}
+                            <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-medium">
+                                Publie
+                            </span>
+                        {% elseif publication.status == 'scheduled' %}
+                            <span class="px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 text-xs font-medium">
+                                Planifie
+                            </span>
+                        {% elseif publication.status == 'failed' %}
+                            <span class="px-3 py-1 rounded-full bg-red-500/20 text-red-400 text-xs font-medium">
+                                Echoue
+                            </span>
+                        {% else %}
+                            <span class="px-3 py-1 rounded-full bg-white/10 text-white/50 text-xs font-medium">
+                                En attente
+                            </span>
+                        {% endif %}
+
+                        {# View Link #}
+                        {% if publication.wordpressUrl %}
+                            <a href="{{ publication.wordpressUrl }}" target="_blank"
+                               class="p-2 rounded-lg hover:bg-white/10 text-white/50 hover:text-white transition-colors"
+                               title="Voir sur WordPress">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                                </svg>
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="p-12 text-center">
+            <div class="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+            </div>
+            <h3 class="text-lg font-medium text-white mb-2">Aucune publication</h3>
+            <p class="text-white/50 mb-6">Vous n'avez pas encore publie d'article</p>
+            <a href="{{ path('app_article_create') }}" class="btn-primary inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-white font-medium">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                Creer un article
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

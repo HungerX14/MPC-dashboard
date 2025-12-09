@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter un site - WPilot{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    {# Header #}
+    <div class="mb-8">
+        <a href="{{ path('app_site_index') }}" class="inline-flex items-center gap-2 text-white/50 hover:text-white transition-colors mb-4">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+            Retour aux sites
+        </a>
+        <h1 class="text-2xl lg:text-3xl font-bold text-white">Ajouter un site WordPress</h1>
+        <p class="mt-1 text-white/60">Connectez un nouveau site WordPress a la plateforme</p>
+    </div>
+
+    {# Form Card #}
+    <div class="glass-card rounded-2xl overflow-hidden">
+        <div class="p-6 lg:p-8">
+            {{ form_start(form, {'attr': {'class': 'space-y-6'}}) }}
+
+            <div>
+                <label class="block text-sm font-medium text-white/70 mb-2">Nom du site</label>
+                {{ form_widget(form.name, {'attr': {'class': 'form-input w-full px-4 py-3 rounded-xl', 'placeholder': 'Mon site WordPress'}}) }}
+                {{ form_errors(form.name) }}
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-white/70 mb-2">URL du site</label>
+                {{ form_widget(form.url, {'attr': {'class': 'form-input w-full px-4 py-3 rounded-xl', 'placeholder': 'http://host.docker.internal:8888/monsite'}}) }}
+                <p class="mt-2 text-xs text-white/40">En local avec Docker, utilisez host.docker.internal au lieu de localhost</p>
+                {{ form_errors(form.url) }}
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-white/70 mb-2">Token API</label>
+                {{ form_widget(form.apiToken, {'attr': {'class': 'form-input w-full px-4 py-3 rounded-xl', 'placeholder': 'Votre token API genere par le plugin'}}) }}
+                <p class="mt-2 text-xs text-white/40">Token d'authentification fourni par le plugin MPC</p>
+                {{ form_errors(form.apiToken) }}
+            </div>
+
+            {# Info Box #}
+            <div class="rounded-xl bg-primary-500/10 border border-primary-500/20 p-4">
+                <div class="flex gap-3">
+                    <div class="flex-shrink-0">
+                        <svg class="w-5 h-5 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-medium text-primary-400 mb-1">Prerequis</h3>
+                        <p class="text-sm text-white/60">Assurez-vous que le plugin MPC est installe et active sur votre site WordPress avant d'ajouter le site.</p>
+                    </div>
+                </div>
+            </div>
+
+            {# Actions #}
+            <div class="flex flex-col sm:flex-row justify-end gap-3 pt-6 border-t border-white/10">
+                <a href="{{ path('app_site_index') }}" class="px-6 py-2.5 rounded-xl border border-white/20 text-white/70 hover:bg-white/5 transition-colors text-center font-medium">
+                    Annuler
+                </a>
+                <button type="submit" class="btn-primary flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl text-white font-medium">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    Ajouter le site
+                </button>
+            </div>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

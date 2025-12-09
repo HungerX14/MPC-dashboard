@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier {{ site.name }} - MPC Dashboard{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <div class="md:flex md:items-center md:justify-between mb-8">
+        <div class="flex-1 min-w-0">
+            <h1 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+                Modifier le site
+            </h1>
+            <p class="mt-1 text-sm text-gray-500">
+                {{ site.name }}
+            </p>
+        </div>
+    </div>
+
+    <div class="bg-white shadow sm:rounded-lg">
+        <div class="px-4 py-5 sm:p-6">
+            {{ form_start(form, {'attr': {'class': 'space-y-6'}}) }}
+
+            <div>
+                {{ form_label(form.name, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                {{ form_widget(form.name) }}
+                {{ form_errors(form.name) }}
+            </div>
+
+            <div>
+                {{ form_label(form.url, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                {{ form_widget(form.url) }}
+                {% if form.url.vars.help %}
+                    <p class="mt-2 text-sm text-gray-500">{{ form.url.vars.help }}</p>
+                {% endif %}
+                {{ form_errors(form.url) }}
+            </div>
+
+            <div>
+                {{ form_label(form.apiToken, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                {{ form_widget(form.apiToken) }}
+                {% if form.apiToken.vars.help %}
+                    <p class="mt-2 text-sm text-gray-500">{{ form.apiToken.vars.help }}</p>
+                {% endif %}
+                {{ form_errors(form.apiToken) }}
+            </div>
+
+            <div class="flex justify-end space-x-3">
+                <a href="{{ path('app_site_show', {id: site.id}) }}"
+                   class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Annuler
+                </a>
+                <button type="submit"
+                        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Enregistrer les modifications
+                </button>
+            </div>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+    {# Danger Zone #}
+    <div class="mt-8 bg-white shadow sm:rounded-lg">
+        <div class="px-4 py-5 sm:p-6">
+            <h3 class="text-lg leading-6 font-medium text-gray-900">Zone de danger</h3>
+            <div class="mt-2 max-w-xl text-sm text-gray-500">
+                <p>La suppression du site est irreversible. Toutes les donnees associees seront perdues.</p>
+            </div>
+            <div class="mt-5">
+                <form action="{{ path('app_site_delete', {id: site.id}) }}" method="post" onsubmit="return confirm('Etes-vous sur de vouloir supprimer ce site ?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ site.id) }}">
+                    <button type="submit"
+                            class="inline-flex items-center justify-center px-4 py-2 border border-transparent font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:text-sm">
+                        Supprimer ce site
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

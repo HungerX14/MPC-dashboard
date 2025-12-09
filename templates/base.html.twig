@@ -1,17 +1,172 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr" class="h-full">
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}WPilot{% endblock %}</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>🚀</text></svg>">
+
         {% block stylesheets %}
+            <script src="https://cdn.tailwindcss.com"></script>
+            <script>
+                tailwind.config = {
+                    theme: {
+                        extend: {
+                            colors: {
+                                primary: {
+                                    50: '#f0f9ff',
+                                    100: '#e0f2fe',
+                                    200: '#bae6fd',
+                                    300: '#7dd3fc',
+                                    400: '#38bdf8',
+                                    500: '#0ea5e9',
+                                    600: '#0284c7',
+                                    700: '#0369a1',
+                                    800: '#075985',
+                                    900: '#0c4a6e',
+                                    950: '#082f49',
+                                },
+                                dark: {
+                                    50: '#f8fafc',
+                                    100: '#f1f5f9',
+                                    200: '#e2e8f0',
+                                    300: '#cbd5e1',
+                                    400: '#94a3b8',
+                                    500: '#64748b',
+                                    600: '#475569',
+                                    700: '#334155',
+                                    800: '#1e293b',
+                                    900: '#0f172a',
+                                    950: '#020617',
+                                }
+                            }
+                        }
+                    }
+                }
+            </script>
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+            <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+            <style>
+                * { font-family: 'Inter', sans-serif; }
+
+                .gradient-bg {
+                    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+                }
+
+                .glass-card {
+                    background: rgba(255, 255, 255, 0.05);
+                    backdrop-filter: blur(10px);
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                }
+
+                .stat-card {
+                    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    transition: all 0.3s ease;
+                }
+
+                .stat-card:hover {
+                    transform: translateY(-2px);
+                    border-color: rgba(14, 165, 233, 0.5);
+                    box-shadow: 0 10px 40px -10px rgba(14, 165, 233, 0.3);
+                }
+
+                .sidebar-link {
+                    transition: all 0.2s ease;
+                }
+
+                .sidebar-link:hover, .sidebar-link.active {
+                    background: rgba(14, 165, 233, 0.1);
+                    color: #38bdf8;
+                }
+
+                .sidebar-link.active {
+                    border-right: 3px solid #0ea5e9;
+                }
+
+                .btn-primary {
+                    background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+                    transition: all 0.3s ease;
+                }
+
+                .btn-primary:hover {
+                    transform: translateY(-1px);
+                    box-shadow: 0 10px 20px -10px rgba(14, 165, 233, 0.5);
+                }
+
+                .form-input {
+                    background: rgba(255, 255, 255, 0.05);
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    color: white;
+                    transition: all 0.2s ease;
+                }
+
+                .form-input:focus {
+                    outline: none;
+                    border-color: #0ea5e9;
+                    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
+                }
+
+                .form-input::placeholder {
+                    color: rgba(255, 255, 255, 0.4);
+                }
+
+                .table-row {
+                    transition: all 0.2s ease;
+                }
+
+                .table-row:hover {
+                    background: rgba(14, 165, 233, 0.05);
+                }
+
+                .pulse-dot {
+                    animation: pulse 2s infinite;
+                }
+
+                @keyframes pulse {
+                    0%, 100% { opacity: 1; }
+                    50% { opacity: 0.5; }
+                }
+
+                .scrollbar-thin::-webkit-scrollbar {
+                    width: 6px;
+                }
+
+                .scrollbar-thin::-webkit-scrollbar-track {
+                    background: rgba(255, 255, 255, 0.05);
+                }
+
+                .scrollbar-thin::-webkit-scrollbar-thumb {
+                    background: rgba(255, 255, 255, 0.2);
+                    border-radius: 3px;
+                }
+            </style>
         {% endblock %}
 
         {% block javascripts %}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
     </head>
-    <body>
-        {% block body %}{% endblock %}
+    <body class="h-full gradient-bg text-white">
+        {% block body %}
+            <div class="flex h-full">
+                {% if app.user %}
+                    {% block sidebar %}
+                        {{ include('components/_sidebar.html.twig') }}
+                    {% endblock %}
+                {% endif %}
+
+                <main class="flex-1 overflow-auto scrollbar-thin">
+                    {% block flashes %}
+                        {{ include('components/_flashes.html.twig') }}
+                    {% endblock %}
+
+                    <div class="p-6 lg:p-8">
+                        {% block content %}{% endblock %}
+                    </div>
+                </main>
+            </div>
+        {% endblock %}
     </body>
 </html>

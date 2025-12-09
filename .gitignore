@@ -9,6 +9,18 @@
 /vendor/
 ###< symfony/framework-bundle ###
 
+###> docker ###
+docker-compose.override.yml
+###< docker ###
+
+###> ide ###
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+###< ide ###
+
 ###> phpunit/phpunit ###
 /phpunit.xml
 /.phpunit.cache/
