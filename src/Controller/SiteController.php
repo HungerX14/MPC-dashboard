@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Site;
-use App\Exception\WordpressApiException;
 use App\Form\SiteType;
+use App\Service\ConnectorFactory;
 use App\Service\SiteManager;
-use App\Service\WordpressApiClient;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -19,7 +19,8 @@ class SiteController extends AbstractController
 {
     public function __construct(
         private readonly SiteManager $siteManager,
-        private readonly WordpressApiClient $apiClient,
+        private readonly ConnectorFactory $connectorFactory,
+        private readonly Security $security,
     ) {
     }
 
@@ -27,9 +28,11 @@ class SiteController extends AbstractController
     public function index(): Response
     {
         $sites = $this->siteManager->getAllSites();
+        $connectors = $this->connectorFactory->getAvailableConnectors();
 
         return $this->render('site/index.html.twig', [
             'sites' => $sites,
+            'connectors' => $connectors,
         ]);
     }
 
@@ -37,10 +40,16 @@ class SiteController extends AbstractController
     public function new(Request $request): Response
     {
         $site = new Site();
+        $site->setOwner($this->security->getUser());
+
         $form = $this->createForm(SiteType::class, $site);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Extract config fields from form
+            $config = $this->extractConfigFromForm($form, $site->getType());
+            $site->setConfig($config);
+
             $this->siteManager->createSite($site);
 
             $this->addFlash('success', sprintf('Le site "%s" a ete cree avec succes.', $site->getName()));
@@ -48,9 +57,12 @@ class SiteController extends AbstractController
             return $this->redirectToRoute('app_site_show', ['id' => $site->getId()]);
         }
 
+        $connectors = $this->connectorFactory->getAvailableConnectors();
+
         return $this->render('site/create.html.twig', [
             'site' => $site,
             'form' => $form,
+            'connectors' => $connectors,
         ]);
     }
 
@@ -61,15 +73,19 @@ class SiteController extends AbstractController
         $statsError = null;
 
         try {
-            $stats = $this->apiClient->fetchStats($site);
-        } catch (WordpressApiException $e) {
-            $statsError = $e->getUserMessage();
+            $connector = $this->connectorFactory->getConnector($site);
+            $stats = $connector->fetchStats($site);
+        } catch (\Exception $e) {
+            $statsError = $e->getMessage();
         }
+
+        $connectorInfo = $this->connectorFactory->getAvailableConnectors()[$site->getType()] ?? null;
 
         return $this->render('site/show.html.twig', [
             'site' => $site,
             'stats' => $stats,
             'stats_error' => $statsError,
+            'connector' => $connectorInfo,
         ]);
     }
 
@@ -80,6 +96,10 @@ class SiteController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Extract config fields from form
+            $config = $this->extractConfigFromForm($form, $site->getType());
+            $site->setConfig($config);
+
             $this->siteManager->updateSite($site);
 
             $this->addFlash('success', sprintf('Le site "%s" a ete modifie avec succes.', $site->getName()));
@@ -87,9 +107,12 @@ class SiteController extends AbstractController
             return $this->redirectToRoute('app_site_show', ['id' => $site->getId()]);
         }
 
+        $connectors = $this->connectorFactory->getAvailableConnectors();
+
         return $this->render('site/edit.html.twig', [
             'site' => $site,
             'form' => $form,
+            'connectors' => $connectors,
         ]);
     }
 
@@ -109,12 +132,26 @@ class SiteController extends AbstractController
     #[Route('/{id}/test', name: 'app_site_test', methods: ['POST'])]
     public function testConnection(Site $site): Response
     {
-        $isConnected = $this->siteManager->testSiteConnection($site);
+        try {
+            $connector = $this->connectorFactory->getConnector($site);
+            $isConnected = $connector->testConnection($site);
 
-        if ($isConnected) {
-            $this->addFlash('success', sprintf('Connexion reussie a "%s".', $site->getName()));
-        } else {
-            $this->addFlash('error', sprintf('Echec de connexion a "%s". Verifiez la configuration.', $site->getName()));
+            if ($isConnected) {
+                $site->setStatus('online');
+                $site->setLastCheckedAt(new \DateTimeImmutable());
+                $this->siteManager->updateSite($site);
+                $this->addFlash('success', sprintf('Connexion reussie a "%s".', $site->getName()));
+            } else {
+                $site->setStatus('offline');
+                $site->setLastCheckedAt(new \DateTimeImmutable());
+                $this->siteManager->updateSite($site);
+                $this->addFlash('error', sprintf('Echec de connexion a "%s". Verifiez la configuration.', $site->getName()));
+            }
+        } catch (\Exception $e) {
+            $site->setStatus('error');
+            $site->setLastCheckedAt(new \DateTimeImmutable());
+            $this->siteManager->updateSite($site);
+            $this->addFlash('error', sprintf('Erreur: %s', $e->getMessage()));
         }
 
         return $this->redirectToRoute('app_site_show', ['id' => $site->getId()]);
@@ -124,17 +161,41 @@ class SiteController extends AbstractController
     public function stats(Site $site): Response
     {
         try {
-            $stats = $this->apiClient->fetchStats($site);
+            $connector = $this->connectorFactory->getConnector($site);
+            $stats = $connector->fetchStats($site);
 
             return $this->render('site/_stats.html.twig', [
                 'site' => $site,
                 'stats' => $stats,
             ]);
-        } catch (WordpressApiException $e) {
+        } catch (\Exception $e) {
             return $this->render('site/_stats_error.html.twig', [
                 'site' => $site,
-                'error' => $e->getUserMessage(),
+                'error' => $e->getMessage(),
             ]);
         }
+    }
+
+    /**
+     * Extract config values from form fields
+     */
+    private function extractConfigFromForm($form, string $type): array
+    {
+        $config = [];
+        $connectorFields = $this->connectorFactory->getConfigurationFields($type);
+
+        foreach ($connectorFields as $fieldName => $fieldConfig) {
+            // Skip url and apiToken - they're stored directly on the entity
+            if (in_array($fieldName, ['url', 'apiToken'])) {
+                continue;
+            }
+
+            $formFieldName = 'config_' . $fieldName;
+            if ($form->has($formFieldName)) {
+                $config[$fieldName] = $form->get($formFieldName)->getData();
+            }
+        }
+
+        return $config;
     }
 }

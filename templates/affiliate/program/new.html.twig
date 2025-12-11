@@ -1,0 +1,165 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouveau programme - Affilio{% endblock %}
+
+{% block content %}
+{# Header #}
+<div class="mb-8">
+    <a href="{{ path('app_affiliate_programs') }}" class="inline-flex items-center gap-2 text-slate-500 hover:text-slate-700 transition-colors mb-4">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+        Retour aux programmes
+    </a>
+
+    <h1 class="text-2xl lg:text-3xl font-bold text-slate-800">Nouveau programme d'affiliation</h1>
+    <p class="text-slate-500 mt-1">Ajoutez un nouveau programme partenaire</p>
+</div>
+
+<form method="post" class="max-w-3xl">
+    <div class="card p-6 mb-6">
+        <h2 class="text-lg font-semibold text-slate-800 mb-4">Informations generales</h2>
+
+        <div class="space-y-4">
+            <div>
+                <label for="name" class="block text-sm font-medium text-slate-700 mb-1">Nom du programme *</label>
+                <input type="text" name="name" id="name" required
+                       class="form-input w-full px-4 py-2.5"
+                       placeholder="Ex: Amazon Associates">
+            </div>
+
+            <div>
+                <label for="description" class="block text-sm font-medium text-slate-700 mb-1">Description</label>
+                <textarea name="description" id="description" rows="3"
+                          class="form-input w-full px-4 py-2.5"
+                          placeholder="Description du programme..."></textarea>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label for="website" class="block text-sm font-medium text-slate-700 mb-1">Site web</label>
+                    <input type="url" name="website" id="website"
+                           class="form-input w-full px-4 py-2.5"
+                           placeholder="https://...">
+                </div>
+
+                <div>
+                    <label for="dashboard_url" class="block text-sm font-medium text-slate-700 mb-1">URL du dashboard</label>
+                    <input type="url" name="dashboard_url" id="dashboard_url"
+                           class="form-input w-full px-4 py-2.5"
+                           placeholder="https://...">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label for="network" class="block text-sm font-medium text-slate-700 mb-1">Reseau d'affiliation</label>
+                    <input type="text" name="network" id="network"
+                           class="form-input w-full px-4 py-2.5"
+                           placeholder="Ex: Awin, CJ, ShareASale..."
+                           list="networks">
+                    <datalist id="networks">
+                        <option value="Amazon Associates">
+                        <option value="Awin">
+                        <option value="CJ Affiliate">
+                        <option value="ShareASale">
+                        <option value="Rakuten">
+                        <option value="Impact">
+                        <option value="PartnerStack">
+                        <option value="Direct">
+                    </datalist>
+                </div>
+
+                <div>
+                    <label for="category" class="block text-sm font-medium text-slate-700 mb-1">Categorie</label>
+                    <input type="text" name="category" id="category"
+                           class="form-input w-full px-4 py-2.5"
+                           placeholder="Ex: Tech, Mode, Finance..."
+                           list="categories">
+                    <datalist id="categories">
+                        <option value="Tech">
+                        <option value="Mode">
+                        <option value="Finance">
+                        <option value="Sante">
+                        <option value="Voyage">
+                        <option value="Formation">
+                        <option value="SaaS">
+                        <option value="E-commerce">
+                    </datalist>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card p-6 mb-6">
+        <h2 class="text-lg font-semibold text-slate-800 mb-4">Commission</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+                <label for="commission_rate" class="block text-sm font-medium text-slate-700 mb-1">Taux de commission</label>
+                <input type="text" name="commission_rate" id="commission_rate"
+                       class="form-input w-full px-4 py-2.5"
+                       placeholder="Ex: 10 ou 15.50">
+            </div>
+
+            <div>
+                <label for="commission_type" class="block text-sm font-medium text-slate-700 mb-1">Type de commission</label>
+                <select name="commission_type" id="commission_type" class="form-input w-full px-4 py-2.5">
+                    <option value="">Selectionner...</option>
+                    <option value="percentage">Pourcentage (%)</option>
+                    <option value="fixed">Montant fixe</option>
+                    <option value="cpa">CPA (Cout par action)</option>
+                    <option value="cpl">CPL (Cout par lead)</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="currency" class="block text-sm font-medium text-slate-700 mb-1">Devise</label>
+                <select name="currency" id="currency" class="form-input w-full px-4 py-2.5">
+                    <option value="EUR">EUR (€)</option>
+                    <option value="USD">USD ($)</option>
+                    <option value="GBP">GBP (£)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <label for="cookie_duration" class="block text-sm font-medium text-slate-700 mb-1">Duree du cookie (jours)</label>
+            <input type="number" name="cookie_duration" id="cookie_duration"
+                   class="form-input w-full md:w-48 px-4 py-2.5"
+                   placeholder="30" min="0">
+        </div>
+    </div>
+
+    <div class="card p-6 mb-6">
+        <h2 class="text-lg font-semibold text-slate-800 mb-4">Statut et notes</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label for="status" class="block text-sm font-medium text-slate-700 mb-1">Statut</label>
+                <select name="status" id="status" class="form-input w-full px-4 py-2.5">
+                    <option value="active">Actif</option>
+                    <option value="paused">En pause</option>
+                    <option value="ended">Termine</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <label for="notes" class="block text-sm font-medium text-slate-700 mb-1">Notes internes</label>
+            <textarea name="notes" id="notes" rows="3"
+                      class="form-input w-full px-4 py-2.5"
+                      placeholder="Notes personnelles sur ce programme..."></textarea>
+        </div>
+    </div>
+
+    <div class="flex items-center justify-end gap-4">
+        <a href="{{ path('app_affiliate_programs') }}" class="btn-secondary px-6 py-2.5 rounded-xl font-medium">
+            Annuler
+        </a>
+        <button type="submit" class="btn-primary px-6 py-2.5 rounded-xl text-white font-medium">
+            Creer le programme
+        </button>
+    </div>
+</form>
+{% endblock %}

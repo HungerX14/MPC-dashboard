@@ -1,63 +1,63 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Activite - WPilot{% endblock %}
+{% block title %}Activite - Affilio{% endblock %}
 
 {% block content %}
 {# Header #}
 <div class="mb-8">
-    <h1 class="text-2xl lg:text-3xl font-bold text-white">Journal d'activite</h1>
-    <p class="mt-1 text-white/60">Historique de toutes vos actions sur la plateforme</p>
+    <h1 class="text-2xl lg:text-3xl font-bold text-slate-800">Journal d'activite</h1>
+    <p class="mt-1 text-slate-500">Historique de toutes vos actions sur la plateforme</p>
 </div>
 
 {# Activity Timeline #}
-<div class="glass-card rounded-2xl overflow-hidden">
+<div class="card rounded-2xl overflow-hidden">
     {% if activities|length > 0 %}
-        <div class="divide-y divide-white/5">
+        <div class="divide-y divide-slate-100">
             {% for activity in activities %}
-                <div class="p-4 flex items-start gap-4 table-row">
+                <div class="p-4 flex items-start gap-4 hover:bg-slate-50 transition-colors">
                     {# Icon #}
                     <div class="flex-shrink-0">
                         {% set color = activity.color %}
                         <div class="w-10 h-10 rounded-xl flex items-center justify-center
-                            {% if color == 'green' %}bg-emerald-500/20{% elseif color == 'red' %}bg-red-500/20{% elseif color == 'blue' %}bg-primary-500/20{% elseif color == 'yellow' %}bg-amber-500/20{% else %}bg-white/10{% endif %}">
+                            {% if color == 'green' %}bg-emerald-100{% elseif color == 'red' %}bg-red-100{% elseif color == 'blue' %}bg-primary-100{% elseif color == 'yellow' %}bg-amber-100{% else %}bg-slate-100{% endif %}">
                             {% if activity.action starts with 'site.created' %}
-                                <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                                 </svg>
                             {% elseif activity.action starts with 'site.updated' %}
-                                <svg class="w-5 h-5 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                 </svg>
                             {% elseif activity.action starts with 'site.deleted' %}
-                                <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                 </svg>
                             {% elseif activity.action starts with 'site.online' %}
-                                <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                                 </svg>
                             {% elseif activity.action starts with 'site.offline' %}
-                                <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                                 </svg>
                             {% elseif activity.action starts with 'article.published' %}
-                                <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                                 </svg>
                             {% elseif activity.action starts with 'article.failed' %}
-                                <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                 </svg>
                             {% elseif activity.action starts with 'article.scheduled' %}
-                                <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                 </svg>
                             {% elseif activity.action starts with 'user.login' %}
-                                <svg class="w-5 h-5 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
                                 </svg>
                             {% else %}
-                                <svg class="w-5 h-5 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                 </svg>
                             {% endif %}
@@ -66,11 +66,11 @@
 
                     {# Content #}
                     <div class="flex-1 min-w-0">
-                        <p class="text-white font-medium">{{ activity.description }}</p>
+                        <p class="text-slate-800 font-medium">{{ activity.description }}</p>
                         <div class="flex items-center gap-3 mt-1">
-                            <span class="text-sm text-white/50">{{ activity.createdAt|date('d/m/Y a H:i') }}</span>
+                            <span class="text-sm text-slate-500">{{ activity.createdAt|date('d/m/Y a H:i') }}</span>
                             {% if activity.ipAddress %}
-                                <span class="text-sm text-white/30">{{ activity.ipAddress }}</span>
+                                <span class="text-sm text-slate-400">{{ activity.ipAddress }}</span>
                             {% endif %}
                         </div>
                     </div>
@@ -78,7 +78,7 @@
                     {# Action badge #}
                     <div class="flex-shrink-0">
                         <span class="px-2 py-1 rounded-lg text-xs font-medium
-                            {% if color == 'green' %}bg-emerald-500/20 text-emerald-400{% elseif color == 'red' %}bg-red-500/20 text-red-400{% elseif color == 'blue' %}bg-primary-500/20 text-primary-400{% elseif color == 'yellow' %}bg-amber-500/20 text-amber-400{% else %}bg-white/10 text-white/50{% endif %}">
+                            {% if color == 'green' %}bg-emerald-100 text-emerald-600{% elseif color == 'red' %}bg-red-100 text-red-600{% elseif color == 'blue' %}bg-primary-100 text-primary-600{% elseif color == 'yellow' %}bg-amber-100 text-amber-600{% else %}bg-slate-100 text-slate-500{% endif %}">
                             {{ activity.action|split('.')|last|capitalize }}
                         </span>
                     </div>
@@ -87,13 +87,13 @@
         </div>
     {% else %}
         <div class="p-12 text-center">
-            <div class="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center mx-auto mb-4">
-                <svg class="w-8 h-8 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
             </div>
-            <h3 class="text-lg font-medium text-white mb-2">Aucune activite</h3>
-            <p class="text-white/50">Votre journal d'activite apparaitra ici</p>
+            <h3 class="text-lg font-medium text-slate-800 mb-2">Aucune activite</h3>
+            <p class="text-slate-500">Votre journal d'activite apparaitra ici</p>
         </div>
     {% endif %}
 </div>

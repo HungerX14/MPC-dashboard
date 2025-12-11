@@ -1,277 +1,293 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Dashboard - WPilot{% endblock %}
+{% block title %}Dashboard - Affilio{% endblock %}
 
 {% block content %}
 {# Header #}
 <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-8">
     <div>
-        <h1 class="text-2xl lg:text-3xl font-bold text-white">
+        <h1 class="text-2xl lg:text-3xl font-bold text-slate-800">
             Bonjour, {{ app.user.fullName|default(app.user.email)|split(' ')|first }} !
         </h1>
-        <p class="mt-1 text-white/60">Voici un apercu de vos sites WordPress</p>
+        <p class="mt-1 text-slate-500">Voici un apercu de vos performances d'affiliation</p>
     </div>
     <div class="flex items-center gap-3">
-        <form action="{{ path('app_dashboard_refresh') }}" method="post">
-            <button type="submit" class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white/70 hover:bg-white/10 hover:text-white transition-all">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-                </svg>
-                <span>Actualiser</span>
-            </button>
-        </form>
-        <a href="{{ path('app_site_new') }}" class="btn-primary flex items-center gap-2 px-4 py-2.5 rounded-xl text-white font-medium">
+        <a href="{{ path('app_affiliate_link_new') }}" class="btn-primary flex items-center gap-2 px-4 py-2.5 rounded-xl text-white font-medium">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
             </svg>
-            <span>Nouveau site</span>
+            <span>Nouveau lien</span>
         </a>
     </div>
 </div>
 
-{# Stats Cards #}
+{# Affiliate Stats Cards #}
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-    {# Total Sites #}
+    {# Total Earnings #}
     <div class="stat-card rounded-2xl p-6">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-white/50 text-sm font-medium">Sites connectes</p>
-                <p class="text-3xl font-bold text-white mt-1">{{ stats.total }}</p>
+                <p class="text-slate-500 text-sm font-medium">Revenus totaux</p>
+                <p class="text-3xl font-bold text-primary-600 mt-1">{{ affiliateStats.earnings|number_format(2, ',', ' ') }} €</p>
             </div>
-            <div class="w-12 h-12 rounded-xl bg-primary-500/20 flex items-center justify-center">
-                <svg class="w-6 h-6 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+            <div class="w-12 h-12 rounded-xl bg-primary-100 flex items-center justify-center">
+                <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
             </div>
         </div>
         <div class="mt-4 flex items-center gap-2">
-            <span class="text-xs px-2 py-1 rounded-full bg-primary-500/20 text-primary-400">+{{ stats.total }} ce mois</span>
+            <span class="text-xs px-2 py-1 rounded-full bg-primary-100 text-primary-600">{{ programCount }} programmes</span>
         </div>
     </div>
 
-    {# Online #}
+    {# Total Clicks #}
     <div class="stat-card rounded-2xl p-6">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-white/50 text-sm font-medium">En ligne</p>
-                <p class="text-3xl font-bold text-emerald-400 mt-1">{{ stats.online }}</p>
+                <p class="text-slate-500 text-sm font-medium">Clics totaux</p>
+                <p class="text-3xl font-bold text-slate-800 mt-1">{{ affiliateStats.totalClicks|number_format(0, ',', ' ') }}</p>
             </div>
-            <div class="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center">
-                <svg class="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            <div class="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center">
+                <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"/>
+                </svg>
+            </div>
+        </div>
+        <div class="mt-4 flex items-center gap-2">
+            <span class="text-emerald-600 text-sm font-medium">+{{ clicksToday }}</span>
+            <span class="text-xs text-slate-400">aujourd'hui</span>
+        </div>
+    </div>
+
+    {# Conversions #}
+    <div class="stat-card rounded-2xl p-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-slate-500 text-sm font-medium">Conversions</p>
+                <p class="text-3xl font-bold text-slate-800 mt-1">{{ affiliateStats.conversions|number_format(0, ',', ' ') }}</p>
+            </div>
+            <div class="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center">
+                <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
             </div>
         </div>
         <div class="mt-4">
-            <div class="w-full h-2 rounded-full bg-white/10">
-                <div class="h-2 rounded-full bg-emerald-500" style="width: {{ stats.total > 0 ? (stats.online / stats.total * 100) : 0 }}%"></div>
+            <div class="w-full h-2 rounded-full bg-slate-100">
+                <div class="h-2 rounded-full bg-amber-500" style="width: {{ affiliateStats.uniqueClicks > 0 ? ((affiliateStats.conversions / affiliateStats.uniqueClicks) * 100)|round : 0 }}%"></div>
             </div>
+            <p class="text-xs text-slate-400 mt-1">{{ affiliateStats.uniqueClicks > 0 ? ((affiliateStats.conversions / affiliateStats.uniqueClicks) * 100)|number_format(1) : '0' }}% taux de conversion</p>
         </div>
     </div>
 
-    {# Offline #}
+    {# Active Links #}
     <div class="stat-card rounded-2xl p-6">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-white/50 text-sm font-medium">Hors ligne</p>
-                <p class="text-3xl font-bold text-amber-400 mt-1">{{ stats.offline }}</p>
+                <p class="text-slate-500 text-sm font-medium">Liens actifs</p>
+                <p class="text-3xl font-bold text-slate-800 mt-1">{{ linkCount }}</p>
             </div>
-            <div class="w-12 h-12 rounded-xl bg-amber-500/20 flex items-center justify-center">
-                <svg class="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            <div class="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
+                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
                 </svg>
             </div>
         </div>
         <div class="mt-4 flex items-center gap-2">
-            {% if stats.offline > 0 %}
-                <span class="pulse-dot w-2 h-2 rounded-full bg-amber-500"></span>
-                <span class="text-xs text-amber-400">Attention requise</span>
-            {% else %}
-                <span class="text-xs text-white/40">Tout va bien</span>
-            {% endif %}
-        </div>
-    </div>
-
-    {# Errors #}
-    <div class="stat-card rounded-2xl p-6">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-white/50 text-sm font-medium">Erreurs</p>
-                <p class="text-3xl font-bold text-red-400 mt-1">{{ stats.error }}</p>
-            </div>
-            <div class="w-12 h-12 rounded-xl bg-red-500/20 flex items-center justify-center">
-                <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                </svg>
-            </div>
-        </div>
-        <div class="mt-4 flex items-center gap-2">
-            {% if stats.error > 0 %}
-                <span class="pulse-dot w-2 h-2 rounded-full bg-red-500"></span>
-                <span class="text-xs text-red-400">Action immediate</span>
-            {% else %}
-                <span class="text-xs text-white/40">Aucune erreur</span>
-            {% endif %}
+            <a href="{{ path('app_affiliate_links') }}" class="text-xs text-primary-600 hover:text-primary-700 font-medium">
+                Voir tous les liens &rarr;
+            </a>
         </div>
     </div>
 </div>
 
 {# Main Content Grid #}
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-    {# Sites List - Takes 2 columns #}
-    <div class="lg:col-span-2 glass-card rounded-2xl overflow-hidden">
-        <div class="p-6 border-b border-white/10 flex items-center justify-between">
+    {# Top Links - Takes 2 columns #}
+    <div class="lg:col-span-2 card rounded-2xl overflow-hidden">
+        <div class="p-6 border-b border-slate-100 flex items-center justify-between">
             <div>
-                <h2 class="text-lg font-semibold text-white">Vos sites WordPress</h2>
-                <p class="text-sm text-white/50">{{ sites|length }} site{{ sites|length > 1 ? 's' : '' }} connecte{{ sites|length > 1 ? 's' : '' }}</p>
+                <h2 class="text-lg font-semibold text-slate-800">Meilleurs liens</h2>
+                <p class="text-sm text-slate-500">Vos liens les plus performants</p>
             </div>
-            <a href="{{ path('app_site_index') }}" class="text-sm text-primary-400 hover:text-primary-300 transition-colors">
+            <a href="{{ path('app_affiliate_links') }}" class="text-sm text-primary-600 hover:text-primary-700 transition-colors font-medium">
                 Voir tout &rarr;
             </a>
         </div>
 
-        {% if sites|length > 0 %}
-            <div class="divide-y divide-white/5">
-                {% for site in sites|slice(0, 5) %}
-                    <div class="table-row p-4 flex items-center justify-between">
-                        <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center text-white font-bold">
-                                {{ site.name|first|upper }}
+        {% if topLinks|length > 0 %}
+            <div class="divide-y divide-slate-100">
+                {% for link in topLinks %}
+                    <div class="p-4 hover:bg-slate-50 transition-colors">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center text-white font-bold">
+                                    {{ link.name|first|upper }}
+                                </div>
+                                <div>
+                                    <h3 class="font-medium text-slate-800">{{ link.name }}</h3>
+                                    {% if link.program %}
+                                        <p class="text-sm text-slate-500">{{ link.program.name }}</p>
+                                    {% else %}
+                                        <p class="text-sm text-slate-400 truncate max-w-xs">{{ link.url|slice(0, 40) }}...</p>
+                                    {% endif %}
+                                </div>
                             </div>
-                            <div>
-                                <h3 class="font-medium text-white">{{ site.name }}</h3>
-                                <p class="text-sm text-white/50 truncate max-w-xs">{{ site.url }}</p>
+                            <div class="flex items-center gap-6">
+                                <div class="text-right">
+                                    <p class="font-semibold text-slate-800">{{ link.totalClicks|number_format(0, ',', ' ') }}</p>
+                                    <p class="text-xs text-slate-400">clics</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="font-semibold text-primary-600">{{ link.totalEarnings|number_format(2, ',', ' ') }} €</p>
+                                    <p class="text-xs text-slate-400">revenus</p>
+                                </div>
+                                <a href="{{ path('app_affiliate_link_show', {id: link.id}) }}" class="p-2 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors" title="Details">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                    </svg>
+                                </a>
                             </div>
-                        </div>
-                        <div class="flex items-center gap-4">
-                            {% if site.status == 'online' %}
-                                <span class="flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-medium">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                                    En ligne
-                                </span>
-                            {% elseif site.status == 'offline' %}
-                                <span class="flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 text-xs font-medium">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
-                                    Hors ligne
-                                </span>
-                            {% elseif site.status == 'error' %}
-                                <span class="flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/20 text-red-400 text-xs font-medium">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-red-400"></span>
-                                    Erreur
-                                </span>
-                            {% else %}
-                                <span class="flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-white/50 text-xs font-medium">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-white/50"></span>
-                                    Inconnu
-                                </span>
-                            {% endif %}
-                            <a href="{{ path('app_article_create_for_site', {id: site.id}) }}" class="p-2 rounded-lg hover:bg-white/10 text-white/50 hover:text-primary-400 transition-colors" title="Publier un article">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                                </svg>
-                            </a>
-                            <a href="{{ path('app_site_show', {id: site.id}) }}" class="p-2 rounded-lg hover:bg-white/10 text-white/50 hover:text-white transition-colors" title="Details">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                                </svg>
-                            </a>
                         </div>
                     </div>
                 {% endfor %}
             </div>
         {% else %}
             <div class="p-12 text-center">
-                <div class="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center mx-auto mb-4">
-                    <svg class="w-8 h-8 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+                <div class="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
                     </svg>
                 </div>
-                <h3 class="text-lg font-medium text-white mb-2">Aucun site connecte</h3>
-                <p class="text-white/50 mb-6">Commencez par connecter votre premier site WordPress</p>
-                <a href="{{ path('app_site_new') }}" class="btn-primary inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-white font-medium">
+                <h3 class="text-lg font-medium text-slate-800 mb-2">Aucun lien d'affiliation</h3>
+                <p class="text-slate-500 mb-6">Commencez par ajouter votre premier lien d'affiliation</p>
+                <a href="{{ path('app_affiliate_link_new') }}" class="btn-primary inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-white font-medium">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                     </svg>
-                    Ajouter un site
+                    Ajouter un lien
                 </a>
             </div>
         {% endif %}
     </div>
 
-    {# Right Column - Quick Actions & Activity #}
+    {# Right Column #}
     <div class="space-y-6">
+        {# Recent Clicks #}
+        <div class="card rounded-2xl p-6">
+            <h2 class="text-lg font-semibold text-slate-800 mb-4">Derniers clics</h2>
+            {% if recentClicks|length > 0 %}
+                <div class="space-y-3">
+                    {% for click in recentClicks %}
+                        <div class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 transition-colors">
+                            <div class="flex items-center gap-2 min-w-0">
+                                <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0">
+                                    {% if click.device == 'mobile' %}
+                                        <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                                        </svg>
+                                    {% else %}
+                                        <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                        </svg>
+                                    {% endif %}
+                                </div>
+                                <div class="min-w-0">
+                                    <p class="text-sm font-medium text-slate-800 truncate">{{ click.link.name }}</p>
+                                    <p class="text-xs text-slate-400">{{ click.country ?? 'Inconnu' }}</p>
+                                </div>
+                            </div>
+                            <span class="text-xs text-slate-400 whitespace-nowrap ml-2">{{ click.clickedAt|date('H:i') }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+                <a href="{{ path('app_affiliate_earnings') }}" class="mt-4 block text-center text-sm text-primary-600 hover:text-primary-700 font-medium">
+                    Voir plus &rarr;
+                </a>
+            {% else %}
+                <div class="text-center py-4">
+                    <p class="text-slate-400 text-sm">Aucun clic recent</p>
+                </div>
+            {% endif %}
+        </div>
+
         {# Quick Actions #}
-        <div class="glass-card rounded-2xl p-6">
-            <h2 class="text-lg font-semibold text-white mb-4">Actions rapides</h2>
+        <div class="card rounded-2xl p-6">
+            <h2 class="text-lg font-semibold text-slate-800 mb-4">Actions rapides</h2>
             <div class="space-y-3">
-                <a href="{{ path('app_article_create') }}" class="flex items-center gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors group">
-                    <div class="w-10 h-10 rounded-lg bg-primary-500/20 flex items-center justify-center group-hover:bg-primary-500/30 transition-colors">
-                        <svg class="w-5 h-5 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                <a href="{{ path('app_affiliate_link_new') }}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors group">
+                    <div class="w-10 h-10 rounded-lg bg-primary-100 flex items-center justify-center group-hover:bg-primary-200 transition-colors">
+                        <svg class="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
                         </svg>
                     </div>
                     <div>
-                        <p class="font-medium text-white">Creer un article</p>
-                        <p class="text-xs text-white/50">Publier sur vos sites</p>
+                        <p class="font-medium text-slate-800">Nouveau lien</p>
+                        <p class="text-xs text-slate-500">Ajouter un lien d'affiliation</p>
                     </div>
                 </a>
-                <a href="{{ path('app_site_new') }}" class="flex items-center gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors group">
-                    <div class="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center group-hover:bg-emerald-500/30 transition-colors">
-                        <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                <a href="{{ path('app_affiliate_program_new') }}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors group">
+                    <div class="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center group-hover:bg-emerald-200 transition-colors">
+                        <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
                         </svg>
                     </div>
                     <div>
-                        <p class="font-medium text-white">Ajouter un site</p>
-                        <p class="text-xs text-white/50">Connecter un nouveau WordPress</p>
+                        <p class="font-medium text-slate-800">Nouveau programme</p>
+                        <p class="text-xs text-slate-500">Ajouter un programme partenaire</p>
                     </div>
                 </a>
-                <a href="{{ path('app_analytics') }}" class="flex items-center gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors group">
-                    <div class="w-10 h-10 rounded-lg bg-violet-500/20 flex items-center justify-center group-hover:bg-violet-500/30 transition-colors">
-                        <svg class="w-5 h-5 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <a href="{{ path('app_affiliate_earnings') }}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors group">
+                    <div class="w-10 h-10 rounded-lg bg-violet-100 flex items-center justify-center group-hover:bg-violet-200 transition-colors">
+                        <svg class="w-5 h-5 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                         </svg>
                     </div>
                     <div>
-                        <p class="font-medium text-white">Statistiques</p>
-                        <p class="text-xs text-white/50">Analyser vos performances</p>
+                        <p class="font-medium text-slate-800">Voir les revenus</p>
+                        <p class="text-xs text-slate-500">Analyser vos performances</p>
                     </div>
                 </a>
             </div>
         </div>
 
-        {# Usage Card #}
-        <div class="glass-card rounded-2xl p-6">
+        {# Sites Summary #}
+        <div class="card rounded-2xl p-6">
             <div class="flex items-center justify-between mb-4">
-                <h2 class="text-lg font-semibold text-white">Votre forfait</h2>
-                <span class="px-2 py-1 rounded-full bg-primary-500/20 text-primary-400 text-xs font-medium">Free</span>
+                <h2 class="text-lg font-semibold text-slate-800">Vos sites</h2>
+                <a href="{{ path('app_site_index') }}" class="text-sm text-primary-600 hover:text-primary-700 font-medium">
+                    Voir tout
+                </a>
             </div>
-            <div class="space-y-4">
-                <div>
-                    <div class="flex items-center justify-between text-sm mb-2">
-                        <span class="text-white/50">Sites utilises</span>
-                        <span class="text-white">{{ stats.total }}/1</span>
+            <div class="space-y-3">
+                {% if sites|length > 0 %}
+                    {% for site in sites|slice(0, 3) %}
+                        <a href="{{ path('app_site_show', {id: site.id}) }}" class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 transition-colors">
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center text-white font-bold text-xs">
+                                    {{ site.name|first|upper }}
+                                </div>
+                                <span class="font-medium text-slate-800 text-sm">{{ site.name }}</span>
+                            </div>
+                            {% if site.status == 'online' %}
+                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                            {% elseif site.status == 'offline' %}
+                                <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                            {% else %}
+                                <span class="w-2 h-2 rounded-full bg-slate-300"></span>
+                            {% endif %}
+                        </a>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-4">
+                        <p class="text-slate-400 text-sm mb-3">Aucun site connecte</p>
+                        <a href="{{ path('app_site_new') }}" class="text-sm text-primary-600 hover:text-primary-700 font-medium">
+                            + Ajouter un site
+                        </a>
                     </div>
-                    <div class="w-full h-2 rounded-full bg-white/10">
-                        <div class="h-2 rounded-full bg-primary-500" style="width: {{ stats.total > 0 ? 100 : 0 }}%"></div>
-                    </div>
-                </div>
-                <div>
-                    <div class="flex items-center justify-between text-sm mb-2">
-                        <span class="text-white/50">Publications ce mois</span>
-                        <span class="text-white">0/10</span>
-                    </div>
-                    <div class="w-full h-2 rounded-full bg-white/10">
-                        <div class="h-2 rounded-full bg-emerald-500" style="width: 0%"></div>
-                    </div>
-                </div>
+                {% endif %}
             </div>
-            <a href="{{ path('app_billing') }}" class="mt-4 w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-primary-500/50 text-primary-400 hover:bg-primary-500/10 transition-colors text-sm font-medium">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
-                </svg>
-                Passer a Pro
-            </a>
         </div>
     </div>
 </div>

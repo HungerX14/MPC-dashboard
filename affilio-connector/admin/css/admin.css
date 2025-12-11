@@ -1,0 +1,404 @@
+/**
+ * Affilio Connector Admin Styles
+ */
+
+/* Variables */
+:root {
+    --affilio-primary: #6366f1;
+    --affilio-primary-dark: #4f46e5;
+    --affilio-success: #10b981;
+    --affilio-warning: #f59e0b;
+    --affilio-danger: #ef4444;
+    --affilio-gray-50: #f8fafc;
+    --affilio-gray-100: #f1f5f9;
+    --affilio-gray-200: #e2e8f0;
+    --affilio-gray-300: #cbd5e1;
+    --affilio-gray-400: #94a3b8;
+    --affilio-gray-500: #64748b;
+    --affilio-gray-600: #475569;
+    --affilio-gray-700: #334155;
+    --affilio-gray-800: #1e293b;
+    --affilio-radius: 12px;
+    --affilio-radius-sm: 8px;
+}
+
+/* Main Container */
+.affilio-admin-wrap {
+    max-width: 900px;
+    margin: 20px 20px 20px 0;
+}
+
+.affilio-admin-wrap h1 {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--affilio-gray-800);
+    margin-bottom: 24px;
+}
+
+.affilio-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, var(--affilio-primary), var(--affilio-primary-dark));
+    border-radius: var(--affilio-radius);
+    color: white;
+}
+
+/* Cards */
+.affilio-card {
+    background: white;
+    border-radius: var(--affilio-radius);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 24px;
+    border: 1px solid var(--affilio-gray-200);
+}
+
+.affilio-card-primary {
+    border-color: var(--affilio-primary);
+    border-width: 2px;
+}
+
+.affilio-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--affilio-gray-100);
+}
+
+.affilio-card-header h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--affilio-gray-800);
+}
+
+.affilio-card-body {
+    padding: 24px;
+}
+
+/* Status Badge */
+.affilio-status {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.affilio-status-success {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.affilio-status-warning {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+/* Description */
+.affilio-description {
+    color: var(--affilio-gray-500);
+    margin-bottom: 24px;
+    line-height: 1.6;
+}
+
+/* Field Groups */
+.affilio-field-group {
+    margin-bottom: 20px;
+}
+
+.affilio-field-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--affilio-gray-700);
+    margin-bottom: 8px;
+}
+
+/* Input Groups */
+.affilio-input-group {
+    display: flex;
+    gap: 8px;
+}
+
+.affilio-input {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1px solid var(--affilio-gray-300);
+    border-radius: var(--affilio-radius-sm);
+    font-size: 14px;
+    color: var(--affilio-gray-800);
+    background: var(--affilio-gray-50);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.affilio-input:focus {
+    outline: none;
+    border-color: var(--affilio-primary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.affilio-input[readonly] {
+    background: var(--affilio-gray-100);
+    cursor: default;
+}
+
+.affilio-token-input {
+    font-family: monospace;
+    font-size: 13px;
+}
+
+/* Buttons */
+.affilio-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    border: none;
+    border-radius: var(--affilio-radius-sm);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.affilio-btn .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+.affilio-btn-primary {
+    background: var(--affilio-primary);
+    color: white;
+}
+
+.affilio-btn-primary:hover {
+    background: var(--affilio-primary-dark);
+}
+
+.affilio-btn-secondary {
+    background: var(--affilio-gray-100);
+    color: var(--affilio-gray-700);
+    border: 1px solid var(--affilio-gray-300);
+}
+
+.affilio-btn-secondary:hover {
+    background: var(--affilio-gray-200);
+}
+
+.affilio-btn-warning {
+    background: var(--affilio-warning);
+    color: white;
+}
+
+.affilio-btn-warning:hover {
+    background: #d97706;
+}
+
+/* Help Text */
+.affilio-help-text {
+    margin-top: 8px;
+    font-size: 13px;
+    color: var(--affilio-gray-500);
+}
+
+/* Toggle Switch */
+.affilio-toggle {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+}
+
+.affilio-toggle input {
+    display: none;
+}
+
+.affilio-toggle-slider {
+    position: relative;
+    width: 44px;
+    height: 24px;
+    background: var(--affilio-gray-300);
+    border-radius: 12px;
+    transition: background 0.2s;
+}
+
+.affilio-toggle-slider::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 50%;
+    transition: transform 0.2s;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.affilio-toggle input:checked + .affilio-toggle-slider {
+    background: var(--affilio-success);
+}
+
+.affilio-toggle input:checked + .affilio-toggle-slider::after {
+    transform: translateX(20px);
+}
+
+.affilio-toggle-label {
+    font-size: 14px;
+    color: var(--affilio-gray-700);
+}
+
+/* Select */
+.affilio-select {
+    padding: 10px 14px;
+    border: 1px solid var(--affilio-gray-300);
+    border-radius: var(--affilio-radius-sm);
+    font-size: 14px;
+    color: var(--affilio-gray-800);
+    background: white;
+    min-width: 300px;
+}
+
+/* Endpoints Table */
+.affilio-endpoints-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.affilio-endpoints-table th,
+.affilio-endpoints-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--affilio-gray-100);
+}
+
+.affilio-endpoints-table th {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--affilio-gray-500);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.affilio-endpoints-table td {
+    font-size: 14px;
+    color: var(--affilio-gray-700);
+}
+
+.affilio-endpoints-table code {
+    padding: 4px 8px;
+    background: var(--affilio-gray-100);
+    border-radius: 4px;
+    font-size: 13px;
+    color: var(--affilio-primary-dark);
+}
+
+/* Method Badges */
+.affilio-method {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+}
+
+.affilio-method-get {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.affilio-method-post {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+/* Test Result */
+.affilio-test-result {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 12px;
+    font-size: 14px;
+}
+
+.affilio-test-result.success {
+    color: var(--affilio-success);
+}
+
+.affilio-test-result.error {
+    color: var(--affilio-danger);
+}
+
+/* Copy success animation */
+.affilio-copy-btn.copied {
+    background: var(--affilio-success) !important;
+    color: white !important;
+    border-color: var(--affilio-success) !important;
+}
+
+/* Loading state */
+.affilio-btn.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.affilio-btn.loading .dashicons {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* WordPress Admin Overrides */
+.affilio-admin-wrap .submit {
+    padding: 0;
+    margin-top: 20px;
+}
+
+.affilio-admin-wrap .submit input[type="submit"] {
+    background: var(--affilio-primary);
+    border: none;
+    border-radius: var(--affilio-radius-sm);
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    height: auto;
+    line-height: 1.5;
+}
+
+.affilio-admin-wrap .submit input[type="submit"]:hover {
+    background: var(--affilio-primary-dark);
+}
+
+/* Responsive */
+@media (max-width: 782px) {
+    .affilio-input-group {
+        flex-wrap: wrap;
+    }
+
+    .affilio-input {
+        width: 100%;
+    }
+
+    .affilio-btn {
+        flex: 1;
+        justify-content: center;
+    }
+
+    .affilio-select {
+        width: 100%;
+        min-width: auto;
+    }
+}

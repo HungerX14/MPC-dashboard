@@ -1,27 +1,27 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Abonnement - WPilot{% endblock %}
+{% block title %}Abonnement - Affilio{% endblock %}
 
 {% block content %}
 {# Header #}
 <div class="mb-8">
-    <h1 class="text-2xl lg:text-3xl font-bold text-white">Abonnement</h1>
-    <p class="mt-1 text-white/60">Gerez votre forfait et votre facturation</p>
+    <h1 class="text-2xl lg:text-3xl font-bold text-slate-800">Abonnement</h1>
+    <p class="mt-1 text-slate-500">Gerez votre forfait et votre facturation</p>
 </div>
 
 {# Current Plan #}
-<div class="glass-card rounded-2xl p-6 mb-8">
+<div class="card rounded-2xl p-6 mb-8">
     <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div>
             <div class="flex items-center gap-3 mb-2">
-                <h2 class="text-xl font-semibold text-white">Forfait {{ subscription.planDetails.name }}</h2>
+                <h2 class="text-xl font-semibold text-slate-800">Forfait {{ subscription.planDetails.name }}</h2>
                 {% if subscription.isPaid %}
-                    <span class="px-2 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-medium">Actif</span>
+                    <span class="px-2 py-1 rounded-full bg-emerald-100 text-emerald-600 text-xs font-medium">Actif</span>
                 {% else %}
-                    <span class="px-2 py-1 rounded-full bg-white/10 text-white/50 text-xs font-medium">Gratuit</span>
+                    <span class="px-2 py-1 rounded-full bg-slate-100 text-slate-500 text-xs font-medium">Gratuit</span>
                 {% endif %}
             </div>
-            <p class="text-white/50">
+            <p class="text-slate-500">
                 {% if subscription.planDetails.price > 0 %}
                     {{ subscription.planDetails.price }} EUR/mois
                 {% else %}
@@ -31,34 +31,34 @@
         </div>
         <div class="flex items-center gap-4">
             <div class="text-right">
-                <p class="text-sm text-white/50">Periode en cours</p>
-                <p class="text-white">{{ subscription.currentPeriodStart|date('d/m/Y') }} - {{ subscription.currentPeriodEnd|date('d/m/Y') }}</p>
+                <p class="text-sm text-slate-500">Periode en cours</p>
+                <p class="text-slate-800">{{ subscription.currentPeriodStart|date('d/m/Y') }} - {{ subscription.currentPeriodEnd|date('d/m/Y') }}</p>
             </div>
         </div>
     </div>
 
     {# Usage Stats #}
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 pt-6 border-t border-white/10">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 pt-6 border-t border-slate-100">
         <div>
             <div class="flex items-center justify-between text-sm mb-2">
-                <span class="text-white/50">Sites utilises</span>
-                <span class="text-white">
+                <span class="text-slate-500">Sites utilises</span>
+                <span class="text-slate-800">
                     {{ subscription.sitesUsed }}/{% if subscription.sitesLimit == -1 %}Illimite{% else %}{{ subscription.sitesLimit }}{% endif %}
                 </span>
             </div>
-            <div class="w-full h-2 rounded-full bg-white/10">
+            <div class="w-full h-2 rounded-full bg-slate-100">
                 <div class="h-2 rounded-full bg-primary-500 transition-all"
                      style="width: {{ subscription.sitesUsagePercentage }}%"></div>
             </div>
         </div>
         <div>
             <div class="flex items-center justify-between text-sm mb-2">
-                <span class="text-white/50">Publications ce mois</span>
-                <span class="text-white">
+                <span class="text-slate-500">Publications ce mois</span>
+                <span class="text-slate-800">
                     {{ subscription.publicationsThisMonth }}/{% if subscription.publicationsLimit == -1 %}Illimite{% else %}{{ subscription.publicationsLimit }}{% endif %}
                 </span>
             </div>
-            <div class="w-full h-2 rounded-full bg-white/10">
+            <div class="w-full h-2 rounded-full bg-slate-100">
                 <div class="h-2 rounded-full bg-emerald-500 transition-all"
                      style="width: {{ subscription.publicationsUsagePercentage }}%"></div>
             </div>
@@ -67,10 +67,10 @@
 </div>
 
 {# Pricing Plans #}
-<h2 class="text-xl font-semibold text-white mb-6">Choisir un forfait</h2>
+<h2 class="text-xl font-semibold text-slate-800 mb-6">Choisir un forfait</h2>
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
     {% for planKey, plan in plans %}
-        <div class="glass-card rounded-2xl p-6 relative {{ subscription.plan == planKey ? 'border-2 border-primary-500' : '' }} {{ planKey == 'pro' ? 'ring-2 ring-primary-500/50' : '' }}">
+        <div class="card rounded-2xl p-6 relative {{ subscription.plan == planKey ? 'border-2 border-primary-500' : '' }} {{ planKey == 'pro' ? 'ring-2 ring-primary-500/50' : '' }}">
             {% if planKey == 'pro' %}
                 <div class="absolute -top-3 left-1/2 -translate-x-1/2">
                     <span class="px-3 py-1 rounded-full bg-primary-500 text-white text-xs font-medium">Populaire</span>
@@ -78,21 +78,21 @@
             {% endif %}
 
             <div class="text-center mb-6">
-                <h3 class="text-lg font-semibold text-white">{{ plan.name }}</h3>
+                <h3 class="text-lg font-semibold text-slate-800">{{ plan.name }}</h3>
                 <div class="mt-2">
-                    <span class="text-3xl font-bold text-white">{{ plan.price }}</span>
+                    <span class="text-3xl font-bold text-slate-800">{{ plan.price }}</span>
                     {% if plan.price > 0 %}
-                        <span class="text-white/50">EUR/mois</span>
+                        <span class="text-slate-500">EUR/mois</span>
                     {% else %}
-                        <span class="text-white/50">Gratuit</span>
+                        <span class="text-slate-500">Gratuit</span>
                     {% endif %}
                 </div>
             </div>
 
             <ul class="space-y-3 mb-6">
                 {% for feature in plan.features %}
-                    <li class="flex items-center gap-2 text-sm text-white/70">
-                        <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <li class="flex items-center gap-2 text-sm text-slate-600">
+                        <svg class="w-4 h-4 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                         </svg>
                         {{ feature }}
@@ -101,12 +101,12 @@
             </ul>
 
             {% if subscription.plan == planKey %}
-                <button disabled class="w-full px-4 py-2.5 rounded-xl bg-white/10 text-white/50 font-medium cursor-not-allowed">
+                <button disabled class="w-full px-4 py-2.5 rounded-xl bg-slate-100 text-slate-400 font-medium cursor-not-allowed">
                     Forfait actuel
                 </button>
             {% else %}
                 <form action="{{ path('app_billing_upgrade', {plan: planKey}) }}" method="post">
-                    <button type="submit" class="w-full px-4 py-2.5 rounded-xl {{ planKey == 'pro' ? 'btn-primary' : 'border border-white/20 hover:bg-white/10' }} text-white font-medium transition-colors">
+                    <button type="submit" class="w-full px-4 py-2.5 rounded-xl {{ planKey == 'pro' ? 'btn-primary' : 'border border-slate-200 hover:bg-slate-50' }} text-{{ planKey == 'pro' ? 'white' : 'slate-800' }} font-medium transition-colors">
                         {% if plans[subscription.plan].price < plan.price %}
                             Passer a {{ plan.name }}
                         {% else %}
@@ -120,20 +120,20 @@
 </div>
 
 {# FAQ #}
-<div class="glass-card rounded-2xl p-6">
-    <h2 class="text-lg font-semibold text-white mb-6">Questions frequentes</h2>
+<div class="card rounded-2xl p-6">
+    <h2 class="text-lg font-semibold text-slate-800 mb-6">Questions frequentes</h2>
     <div class="space-y-4">
-        <div class="p-4 rounded-xl bg-white/5">
-            <h3 class="font-medium text-white mb-2">Puis-je changer de forfait a tout moment ?</h3>
-            <p class="text-sm text-white/50">Oui, vous pouvez passer a un forfait superieur ou inferieur a tout moment. Le changement prend effet immediatement.</p>
+        <div class="p-4 rounded-xl bg-slate-50">
+            <h3 class="font-medium text-slate-800 mb-2">Puis-je changer de forfait a tout moment ?</h3>
+            <p class="text-sm text-slate-500">Oui, vous pouvez passer a un forfait superieur ou inferieur a tout moment. Le changement prend effet immediatement.</p>
         </div>
-        <div class="p-4 rounded-xl bg-white/5">
-            <h3 class="font-medium text-white mb-2">Comment fonctionne la facturation ?</h3>
-            <p class="text-sm text-white/50">La facturation est mensuelle. Vous serez facture au debut de chaque periode.</p>
+        <div class="p-4 rounded-xl bg-slate-50">
+            <h3 class="font-medium text-slate-800 mb-2">Comment fonctionne la facturation ?</h3>
+            <p class="text-sm text-slate-500">La facturation est mensuelle. Vous serez facture au debut de chaque periode.</p>
         </div>
-        <div class="p-4 rounded-xl bg-white/5">
-            <h3 class="font-medium text-white mb-2">Que se passe-t-il si je depasse mes limites ?</h3>
-            <p class="text-sm text-white/50">Vous recevrez une notification et devrez passer a un forfait superieur pour continuer a utiliser le service.</p>
+        <div class="p-4 rounded-xl bg-slate-50">
+            <h3 class="font-medium text-slate-800 mb-2">Que se passe-t-il si je depasse mes limites ?</h3>
+            <p class="text-sm text-slate-500">Vous recevrez une notification et devrez passer a un forfait superieur pour continuer a utiliser le service.</p>
         </div>
     </div>
 </div>

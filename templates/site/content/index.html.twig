@@ -1,0 +1,231 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contenu de {{ site.name }} - Affilio{% endblock %}
+
+{% block content %}
+{# Header #}
+<div class="mb-8">
+    <a href="{{ path('app_site_show', {id: site.id}) }}" class="inline-flex items-center gap-2 text-slate-500 hover:text-slate-700 transition-colors mb-4">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+        Retour au site
+    </a>
+
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div>
+            <div class="flex items-center gap-3 mb-1">
+                <h1 class="text-2xl lg:text-3xl font-bold text-slate-800">Contenu de {{ site.name }}</h1>
+                {% if connector %}
+                    <span class="px-2 py-1 rounded-lg text-xs font-medium
+                        {% if site.type == 'wordpress' %}bg-blue-100 text-blue-600
+                        {% elseif site.type == 'api' %}bg-purple-100 text-purple-600
+                        {% else %}bg-orange-100 text-orange-600{% endif %}">
+                        {{ connector.name }}
+                    </span>
+                {% endif %}
+            </div>
+            <p class="text-slate-500">{{ total }} {{ type == 'pages' ? 'page' : 'article' }}{{ total > 1 ? 's' : '' }} trouve{{ total > 1 ? 's' : '' }}</p>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <a href="{{ path('app_article_create_for_site', {id: site.id}) }}" class="btn-primary flex items-center gap-2 px-4 py-2.5 rounded-xl text-white font-medium">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                Nouvel article
+            </a>
+        </div>
+    </div>
+</div>
+
+{# Filters #}
+<div class="card rounded-2xl p-4 mb-6">
+    <div class="flex flex-col md:flex-row gap-4">
+        {# Type tabs #}
+        <div class="flex rounded-xl bg-slate-100 p-1">
+            <a href="{{ path('app_site_content', {id: site.id, type: 'posts', search: search}) }}"
+               class="px-4 py-2 rounded-lg text-sm font-medium transition-all {{ type == 'posts' ? 'bg-primary-500 text-white' : 'text-slate-600 hover:text-slate-800' }}">
+                Articles
+            </a>
+            <a href="{{ path('app_site_content', {id: site.id, type: 'pages', search: search}) }}"
+               class="px-4 py-2 rounded-lg text-sm font-medium transition-all {{ type == 'pages' ? 'bg-primary-500 text-white' : 'text-slate-600 hover:text-slate-800' }}">
+                Pages
+            </a>
+        </div>
+
+        {# Search #}
+        <form method="get" class="flex-1 flex gap-2">
+            <input type="hidden" name="type" value="{{ type }}">
+            <div class="relative flex-1">
+                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+                <input type="text" name="search" value="{{ search }}" placeholder="Rechercher..."
+                       class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-800 placeholder-slate-400 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all">
+            </div>
+            <button type="submit" class="px-4 py-2.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors">
+                Rechercher
+            </button>
+        </form>
+    </div>
+</div>
+
+{# Content List #}
+{% if items|length > 0 %}
+    <div class="space-y-4">
+        {% for item in items %}
+            <div class="card rounded-2xl overflow-hidden hover:shadow-lg transition-all group">
+                <div class="flex">
+                    {# Featured Image #}
+                    {% if item.featured_image %}
+                        <div class="w-48 h-32 flex-shrink-0 hidden md:block">
+                            <img src="{{ item.featured_image }}" alt="{{ item.title }}"
+                                 class="w-full h-full object-cover">
+                        </div>
+                    {% endif %}
+
+                    {# Content #}
+                    <div class="flex-1 p-6">
+                        <div class="flex items-start justify-between gap-4">
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-2 mb-2">
+                                    {# Status badge #}
+                                    {% if item.status == 'publish' %}
+                                        <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-600 text-xs font-medium">Publie</span>
+                                    {% elseif item.status == 'draft' %}
+                                        <span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-600 text-xs font-medium">Brouillon</span>
+                                    {% else %}
+                                        <span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 text-xs font-medium">{{ item.status }}</span>
+                                    {% endif %}
+
+                                    {# Type badge #}
+                                    <span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 text-xs">
+                                        {{ item.type == 'page' ? 'Page' : 'Article' }}
+                                    </span>
+                                </div>
+
+                                <h3 class="text-lg font-semibold text-slate-800 mb-2 group-hover:text-primary-600 transition-colors">
+                                    <a href="{{ path('app_site_content_post', {id: site.id, postId: item.id}) }}">
+                                        {{ item.title|raw }}
+                                    </a>
+                                </h3>
+
+                                {% if item.excerpt %}
+                                    <p class="text-slate-500 text-sm line-clamp-2 mb-3">{{ item.excerpt|slice(0, 200) }}{{ item.excerpt|length > 200 ? '...' : '' }}</p>
+                                {% endif %}
+
+                                <div class="flex flex-wrap items-center gap-4 text-sm text-slate-400">
+                                    {% if item.author is defined and item.author %}
+                                        <div class="flex items-center gap-2">
+                                            {% if item.author.avatar is defined and item.author.avatar %}
+                                                <img src="{{ item.author.avatar }}" alt="{{ item.author.name }}" class="w-5 h-5 rounded-full">
+                                            {% endif %}
+                                            <span>{{ item.author.name }}</span>
+                                        </div>
+                                    {% endif %}
+
+                                    {% if item.date is defined and item.date %}
+                                        <div class="flex items-center gap-1">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                            </svg>
+                                            <span>{{ item.date|date('d/m/Y') }}</span>
+                                        </div>
+                                    {% endif %}
+
+                                    {% if item.categories is defined and item.categories|length > 0 %}
+                                        <div class="flex items-center gap-1">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+                                            </svg>
+                                            <span>{{ item.categories|map(c => c.name)|join(', ') }}</span>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            {# Actions #}
+                            <div class="flex items-center gap-2">
+                                {% if item.url %}
+                                    <a href="{{ item.url }}" target="_blank"
+                                       class="p-2 rounded-lg bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-700 transition-colors"
+                                       title="Voir sur le site">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                                        </svg>
+                                    </a>
+                                {% endif %}
+                                <a href="{{ path('app_site_content_post', {id: site.id, postId: item.id}) }}"
+                                   class="p-2 rounded-lg bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-700 transition-colors"
+                                   title="Voir le detail">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    {# Pagination #}
+    {% if totalPages > 1 %}
+        <div class="flex justify-center mt-8">
+            <div class="flex items-center gap-2">
+                {% if currentPage > 1 %}
+                    <a href="{{ path('app_site_content', {id: site.id, type: type, page: currentPage - 1, search: search}) }}"
+                       class="px-4 py-2 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-800 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                    </a>
+                {% endif %}
+
+                {% for p in range(max(1, currentPage - 2), min(totalPages, currentPage + 2)) %}
+                    <a href="{{ path('app_site_content', {id: site.id, type: type, page: p, search: search}) }}"
+                       class="px-4 py-2 rounded-lg transition-colors {{ p == currentPage ? 'bg-primary-500 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-800' }}">
+                        {{ p }}
+                    </a>
+                {% endfor %}
+
+                {% if currentPage < totalPages %}
+                    <a href="{{ path('app_site_content', {id: site.id, type: type, page: currentPage + 1, search: search}) }}"
+                       class="px-4 py-2 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-800 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+
+{% else %}
+    {# Empty state #}
+    <div class="card rounded-2xl p-12 text-center">
+        <div class="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+        </div>
+        <h3 class="text-xl font-semibold text-slate-800 mb-2">Aucun contenu trouve</h3>
+        <p class="text-slate-500 mb-6">
+            {% if search %}
+                Aucun resultat pour "{{ search }}"
+            {% else %}
+                Ce site ne contient pas encore de {{ type == 'pages' ? 'pages' : 'articles' }}
+            {% endif %}
+        </p>
+        <a href="{{ path('app_article_create_for_site', {id: site.id}) }}" class="btn-primary inline-flex items-center gap-2 px-6 py-3 rounded-xl text-white font-medium">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            </svg>
+            Creer un article
+        </a>
+    </div>
+{% endif %}
+{% endblock %}
